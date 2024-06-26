@@ -1,25 +1,50 @@
-import logo from './logo.svg';
-import './App.css';
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
+import Login from "./pages/Login";
+import UserDashBoard from "./components/UserDashBoard";
+import AdminDashBoard from "./components/AdminDashBoard";
+import Signup from "./pages/Signup";
+import "./App.css";
+import HomeDashBoard from "./pages/HomeDashBoard";
+import { DisplayElementProvider } from "./context/ComponentContext";
+import { StateProvider } from "./context/globalState";
 
-function App() {
+const App = () => {
+  const islogged = localStorage.getItem("authToken");
+  //if user is not logged then it will go to login page
+  const ProtectedRoute = ({ children }) => {
+    if (islogged == null) {
+      return <Navigate to="/login" />;
+    }
+    return children;
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <DisplayElementProvider>
+      <StateProvider>
+      <div className="App">
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <HomeDashBoard />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </div>
+      </StateProvider>
+      </DisplayElementProvider>
+    </Router>
   );
-}
+};
 
 export default App;
