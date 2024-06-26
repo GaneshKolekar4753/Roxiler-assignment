@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-const RatingList = () => {
+const RatingList = ({storeId}) => {
+  console.log(storeId)
   const [ratings, setRatings] = useState([]);
   const token = localStorage.getItem("authToken");
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const currentRole=localStorage.getItem("currentRole");
   const getRatings = async () => {
     const response = await fetch(
       `http://localhost:7000/api/ratings/${currentUser.id}`,
@@ -19,8 +21,26 @@ const RatingList = () => {
     // console.log(data);
     setRatings([...ratings, ...data]);
   };
+  const getAllRatings = async () => {
+    const response = await fetch(
+      `http://localhost:7000/api/ratings/store/${storeId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      }
+    );
+    const data = await response.json();
+    // console.log(data);
+    setRatings([...ratings, ...data]);
+  };
   useEffect(() => {
-    getRatings();
+    if(currentRole==="User"){
+     getRatings();
+    }
+    getAllRatings()
   }, []);
   return (
     <div className="displayContainer usersList">
