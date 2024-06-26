@@ -72,6 +72,19 @@ class RatingController {
         res.status(500).json({ msg: 'Internal Server error',error:err });
     }
   }
+
+  async getAllRatingsbyStore(req,res){
+    const storeId=req.params.storeId;
+    try {
+        const ratings = await Rating.find().find({store:storeId}).populate("user").populate("store")
+        if(!ratings){
+            return res.status(400).json({msg:"no store found"});
+        }
+        res.status(200).json(ratings);
+    } catch (err) {
+        res.status(500).json({ msg: 'Internal Server error',error:err });
+    }
+  }
 }
 
 module.exports = RatingController;
