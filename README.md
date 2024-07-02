@@ -1,4 +1,4 @@
-# Roxiler_assignment
+# Store_ratings_management
 
 The objective is to build an application using MERN stack.
 
